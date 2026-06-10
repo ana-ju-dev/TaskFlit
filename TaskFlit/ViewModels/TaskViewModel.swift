@@ -52,4 +52,10 @@ class TaskViewModel {
             allTasks[index].isCompleted.toggle()
         }
     }
+    
+    // Adicione essa função dentro da sua class TaskViewModel
+    func addTask(_ task: TaskItem) {
+        // Insere a nova tarefa no topo da lista (índice 0)
+        allTasks.insert(task, at: 0)
+    }
 }

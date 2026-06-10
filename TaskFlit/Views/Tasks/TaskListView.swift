@@ -9,14 +9,13 @@ import SwiftUI
 
 struct TaskListView: View {
     @State private var viewModel = TaskViewModel()
+    @State private var isShowingAddTaskSheet = false
     
     var body: some View {
         NavigationStack {
-            // Usamos o ZStack para conseguir flutuar o botão por cima da lista!
             ZStack(alignment: .bottomTrailing) {
                 
                 VStack(spacing: 0) {
-                    // Seletor de Filtros com um espaçamento elegante
                     Picker("Filtro", selection: $viewModel.selectedFilter) {
                         ForEach(TaskViewModel.AppFilter.allCases) { filter in
                             Text(filter.rawValue).tag(filter)
@@ -24,9 +23,8 @@ struct TaskListView: View {
                     }
                     .pickerStyle(.segmented)
                     .padding()
-                    .background(Color(.systemBackground)) // Garante fundo sólido no topo
-                    
-                    // A Lista de Tarefas
+                    .background(Color(.systemBackground))
+
                     List {
                         if viewModel.filteredTasks.isEmpty {
                             ContentUnavailableView(
@@ -34,12 +32,12 @@ struct TaskListView: View {
                                 systemImage: "doc.text.magnifyingglass",
                                 description: Text("Você não tem tarefas neste filtro.")
                             )
-                            .listRowBackground(Color.clear) // Remove o fundo da célula de aviso
+                            .listRowBackground(Color.clear)
                         } else {
                             ForEach(viewModel.filteredTasks) { task in
                                 TaskRowView(task: task)
-                                    .listRowSeparator(.visible) // Mantém uma linha sutil divisória
-                                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.4)) // Células levemente destacadas
+                                    .listRowSeparator(.visible)
+                                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.4)) 
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
@@ -49,23 +47,31 @@ struct TaskListView: View {
                             }
                         }
                     }
-                    .listStyle(.insetGrouped) // Muda para o estilo agrupado moderno (com bordas arredondadas nas laterais)
+                    .listStyle(.insetGrouped)
                 }
                 
                 Button(action: {
-                    print("Botão de adicionar clicado!")
-                    // Próximo passo: abrir a tela de cadastro aqui
-                }) {
+                    isShowingAddTaskSheet = true
+                })
+                {
                     Image(systemName: "plus")
                         .font(.title.bold())
                         .foregroundColor(.white)
                         .frame(width: 60, height: 60)
-                        .background(Color.accentColor) // Usa a cor principal do seu app
+                        .background(Color.accentColor)
                         .clipShape(Circle())
                         .shadow(color: Color.black.opacity(0.25), radius: 4, x: 0, y: 4)
                 }
-                .padding(.trailing, 24) // Afasta o botão da borda direita
-                .padding(.bottom, 24)   // Afasta o botão do fundo da tela
+                .padding(.trailing, 24)
+                .padding(.bottom, 24)
+            }
+            .sheet(isPresented: $isShowingAddTaskSheet) {
+                AddTaskView { newTask in
+                  
+                    withAnimation(.spring()) {
+                        viewModel.addTask(newTask)
+                    }
+                }
             }
             .navigationTitle("TaskFlit")
         }
