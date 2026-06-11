@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct EmptyStateView: View {
-    // Recebemos o filtro atual para mudar o texto dinamicamente!
+
     let currentFilter: TaskViewModel.AppFilter
-    
-    // Variáveis computadas para entregar o ícone e o texto certos
+
     private var iconName: String {
         switch currentFilter {
         case .all: return "clipboard"
@@ -46,7 +45,6 @@ struct EmptyStateView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            // 1. O Ícone central estilizado com um fundo suave
             ZStack {
                 Circle()
                     .fill(iconColor.opacity(0.1))
@@ -57,8 +55,7 @@ struct EmptyStateView: View {
                     .foregroundColor(iconColor)
             }
             .padding(.top, 40)
-            
-            // 2. Os Textos explicativos
+
             VStack(spacing: 8) {
                 Text(title)
                     .font(.title3)

@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct TaskListView: View {
+    
     @State private var viewModel = TaskViewModel()
+
     @State private var isShowingAddTaskSheet = false
+    @State private var taskToEdit: TaskItem? = nil
     
     var body: some View {
         NavigationStack {
@@ -27,27 +30,29 @@ struct TaskListView: View {
 
                     List {
                         if viewModel.filteredTasks.isEmpty {
-                                    EmptyStateView(currentFilter: viewModel.selectedFilter)
-                                        .listRowBackground(Color.clear) // Mantém o fundo transparente
-                                        .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                            EmptyStateView(currentFilter: viewModel.selectedFilter)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                         } else {
+                            
                             ForEach(viewModel.filteredTasks) { task in
-                                // Passamos a tarefa e criamos a ação de deletar direto no botão dela
                                 TaskRowView(task: task) {
-                                    // Encontra o índice dessa tarefa específica para apagar
                                     if let index = viewModel.allTasks.firstIndex(where: { $0.id == task.id }) {
                                         withAnimation(.easeInOut) {
                                             viewModel.allTasks.remove(at: index)
                                             StorageService.saveTasks(viewModel.allTasks)
                                         }
                                     }
-                                }
-                                .contentShape(Rectangle())
-                                .onTapGesture {
+                                } onCheckToggle: {
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                                         viewModel.toggleTaskCompletion(task: task)
                                     }
+                                }
+                                .listRowSeparator(.visible)
+                                .listRowBackground(Color(.secondarySystemBackground).opacity(0.4))
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    taskToEdit = task
                                 }
                             }
                         }
@@ -57,8 +62,7 @@ struct TaskListView: View {
                 
                 Button(action: {
                     isShowingAddTaskSheet = true
-                })
-                {
+                }) {
                     Image(systemName: "plus")
                         .font(.title.bold())
                         .foregroundColor(.white)
@@ -70,15 +74,21 @@ struct TaskListView: View {
                 .padding(.trailing, 24)
                 .padding(.bottom, 24)
             }
+            .navigationTitle("TaskFlit")
             .sheet(isPresented: $isShowingAddTaskSheet) {
                 AddTaskView { newTask in
-                  
                     withAnimation(.spring()) {
                         viewModel.addTask(newTask)
                     }
                 }
             }
-            .navigationTitle("TaskFlit")
+            .sheet(item: $taskToEdit) { task in
+                EditTaskView(task: task) { updatedTask in
+                    withAnimation {
+                        viewModel.updateTask(updatedTask)
+                    }
+                }
+            }
         }
     }
 }

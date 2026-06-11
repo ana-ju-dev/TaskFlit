@@ -26,7 +26,6 @@ class TaskViewModel {
     }
     
     func fetchTasks() {
-        // Mude de loadMockTasks() para loadTasks()
         self.allTasks = StorageService.loadTasks()
     }
     
@@ -44,24 +43,28 @@ class TaskViewModel {
     func toggleTaskCompletion(task: TaskItem) {
         if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
             allTasks[index].isCompleted.toggle()
-            StorageService.saveTasks(allTasks) // 🔥 Salva no HD!
+            StorageService.saveTasks(allTasks)
         }
     }
 
     func addTask(_ task: TaskItem) {
         allTasks.insert(task, at: 0)
-        StorageService.saveTasks(allTasks) // 🔥 Salva no HD!
+        StorageService.saveTasks(allTasks)
     }
     
     func deleteTask(at offsets: IndexSet) {
-        // 1. Descobre qual item foi arrastado usando o índice do filtro atual
         for index in offsets {
             let taskToDelete = filteredTasks[index]
             
-            // 2. Remove o item correspondente da nossa lista principal (allTasks)
             if let mainIndex = allTasks.firstIndex(where: { $0.id == taskToDelete.id }) {
                 allTasks.remove(at: mainIndex)
             }
+        }
+    }
+    func updateTask(_ updatedTask: TaskItem) {
+        if let index = allTasks.firstIndex(where: { $0.id == updatedTask.id }) {
+            allTasks[index] = updatedTask
+            StorageService.saveTasks(allTasks)
         }
     }
 }

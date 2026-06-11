@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct TaskFlitApp: App {
-    // 1. Estado que controla se a Splash deve ser exibida
+    //o que controla se a Splash deve ser exibida ou nao
     @State private var showSplash = true
     
     var body: some Scene {

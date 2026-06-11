@@ -8,15 +8,30 @@
 import SwiftUI
 
 struct TaskRowView: View {
+
     let task: TaskItem
     var onDeleteAction: () -> Void
+    var onCheckToggle: () -> Void
+    
+    private var priorityColor: Color {
+        switch task.priority {
+        case .high: return .red
+        case .medium: return .orange
+        case .low: return .blue
+        }
+    }
     
     var body: some View {
         HStack(spacing: 16) {
-            // 1. O Checkbox (Tocar aqui ou no texto conclui a tarefa)
-            Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                .font(.title2)
-                .foregroundColor(task.isCompleted ? .green : .gray)
+   
+            Button(action: {
+                onCheckToggle()
+            }) {
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .font(.title2)
+                    .foregroundColor(task.isCompleted ? .green : .gray)
+            }
+            .buttonStyle(.plain)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(task.title)
@@ -47,25 +62,16 @@ struct TaskRowView: View {
                 .foregroundColor(.secondary)
             }
             
-            // 2. O PULO DO GATO: O Novo Botão de Lixeira Intuitivo
             Button(action: {
-                onDeleteAction() // Dispara a ação que vem lá da Home
+                onDeleteAction()
             }) {
                 Image(systemName: "trash")
                     .font(.title3)
                     .foregroundColor(.red.opacity(0.8))
                     .padding(8)
             }
-            .buttonStyle(.plain) // 🔥 CRUCIAL: Impede que o clique na lixeira acione a linha inteira!
+            .buttonStyle(.plain)
         }
         .padding(.vertical, 8)
-    }
-    
-    private var priorityColor: Color {
-        switch task.priority {
-        case .high: return .red
-        case .medium: return .orange
-        case .low: return .blue
-        }
     }
 }
