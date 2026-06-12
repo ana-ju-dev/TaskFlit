@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct TaskFlitApp: App {
-    @State private var showSplash: Bool = true
+    @State private var showSplash: Bool = true //vigiando o valor da variavel
     
     var body: some Scene {
         WindowGroup {
-            if showSplash {
+            if showSplash { //true
                 SplashView()
                 
                     .onAppear {
@@ -23,7 +23,7 @@ struct TaskFlitApp: App {
                             }
                         }
                     }
-            } else {
+            } else { //false
                 MainTabView()
             }
         }

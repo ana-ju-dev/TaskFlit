@@ -7,13 +7,13 @@
 
 import Foundation
 
-@Observable
+@Observable //ta sendo obervando os estados de alteracao
 class TaskViewModel {
-    var allTasks: [TaskItem] = []
+    var allTasks: [TaskItem] = [] //dona de todas as tasks
     var selectedFilter: AppFilter = .all
     var searchText: String = ""
     
-    enum AppFilter: String, CaseIterable, Identifiable {
+    enum AppFilter: String, CaseIterable, Identifiable { //nao deixa textos soltos
         case all = "Todas"
         case pending = "Pendentes"
         case completed = "Concluídas"
@@ -29,7 +29,7 @@ class TaskViewModel {
         self.allTasks = StorageService.loadTasks()
     }
 
-    var filteredTasks: [TaskItem] {
+    var filteredTasks: [TaskItem] { //filtro e busca
         
         let tasksByStatus: [TaskItem]
         
@@ -50,19 +50,19 @@ class TaskViewModel {
             }
         }
     }
-    func toggleTaskCompletion(task: TaskItem) {
+    func toggleTaskCompletion(task: TaskItem) { //alterar
         if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
             allTasks[index].isCompleted.toggle()
             StorageService.saveTasks(allTasks)
         }
     }
 
-    func addTask(_ task: TaskItem) {
+    func addTask(_ task: TaskItem) { //adicionar
         allTasks.insert(task, at: 0)
         StorageService.saveTasks(allTasks)
     }
     
-    func deleteTask(at offsets: IndexSet) {
+    func deleteTask(at offsets: IndexSet) { //deletar
         for index in offsets {
             let taskToDelete = filteredTasks[index]
             
@@ -71,7 +71,7 @@ class TaskViewModel {
             }
         }
     }
-    func updateTask(_ updatedTask: TaskItem) {
+    func updateTask(_ updatedTask: TaskItem) { //atualizar
         if let index = allTasks.firstIndex(where: { $0.id == updatedTask.id }) {
             allTasks[index] = updatedTask
             StorageService.saveTasks(allTasks)

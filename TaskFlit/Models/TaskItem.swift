@@ -7,12 +7,12 @@
 
 import Foundation
 
-enum TaskPriority: String, Codable, CaseIterable, Identifiable {
+enum TaskPriority: String, Codable, CaseIterable, Identifiable {//classificacao
     case low = "low"
     case medium = "medium"
     case high = "high"
     
-    var title: String {
+    var title: String { //tradutor das classificacoes
         switch self {
         case .low: return "Baixa"
         case .medium: return "Média"
@@ -24,15 +24,15 @@ enum TaskPriority: String, Codable, CaseIterable, Identifiable {
 }
 
 
-struct TaskItem: Identifiable, Codable {
-    var id: UUID = UUID()
+struct TaskItem: Identifiable, Codable { //estrutura dos dados
+    var id: UUID = UUID() //identificador unico pra nao misturar as tarefas
     var title: String
     var description: String
     var dueDate: Date
     var priority: TaskPriority
     var isCompleted: Bool
     
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {//lidando com o json
         case title, description, dueDate, priority, isCompleted
     }
 }

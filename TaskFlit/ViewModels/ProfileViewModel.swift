@@ -7,25 +7,23 @@
 
 import Foundation
 
-@Observable
+@Observable //observando os estados
 class ProfileViewModel {
-
     var name: String = ""
     var email: String = ""
     var age: String = ""
     var isEditing: Bool = false
     var isEmailValid: Bool = true
     var emailErrorMessage: String = ""
-    
     var completedTasksCount: Int = 0
     var pendingTasksCount: Int = 0
     
-    init() {
+    init() { //procurando as informacoes salvas
         loadProfile()
         loadTaskStats()
     }
     
-    func loadProfile() {
+    func loadProfile() { //ponte pra atualizar o que ta salvo na memoria
         let profile = UserProfileManager.getProfile()
         self.name = profile.name
         self.email = profile.email
@@ -34,18 +32,18 @@ class ProfileViewModel {
         validateEmail()
     }
     
-    func saveProfile() {
+    func saveProfile() {//ponte pra atualizar o que ta salvo na memoria tambem
         let newProfile = UserProfile(name: name, email: email, age: age)
         UserProfileManager.saveProfile(newProfile)
     }
     
-    func loadTaskStats() {
+    func loadTaskStats() { //carrega as tarefas filtradas
         let allTasks = StorageService.loadTasks()
         self.completedTasksCount = allTasks.filter { $0.isCompleted }.count
         self.pendingTasksCount = allTasks.filter { !$0.isCompleted }.count
     }
     
-    func validateEmail() {
+    func validateEmail() { //validando o email
         if email.isEmpty {
             isEmailValid = true
             emailErrorMessage = ""

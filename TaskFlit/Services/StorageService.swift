@@ -9,13 +9,13 @@ import Foundation
 
 struct StorageService {
     
-    private static var fileURL: URL {
+    private static var fileURL: URL { //procuta o arquivo do IOS onde é permitido salver os arquivos
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0].appendingPathComponent("user_tasks.json")
     }
     
     static func loadTasks() -> [TaskItem] {
-        if FileManager.default.fileExists(atPath: fileURL.path) {
+        if FileManager.default.fileExists(atPath: fileURL.path) { //pra quando o app ja tiver sido usado
             print("lendo dados salvos no HD do aparelho")
             do {
                 let data = try Data(contentsOf: fileURL)
@@ -26,9 +26,9 @@ struct StorageService {
                 print("erro ao ler o arquivo do HD: \(error)")
             }
         }
-        //para quando for a primeira vez do usuario usando o app
+
         print("arquivo salvo não encontrado. Carregando dados iniciais de fábrica")
-        guard let mockURL = Bundle.main.url(forResource: "tasks", withExtension: "json") else {
+        guard let mockURL = Bundle.main.url(forResource: "tasks", withExtension: "json") else { //para quando for a primeira vez do usuario usando o app
             return []
         }
         
@@ -46,7 +46,7 @@ struct StorageService {
         }
     }
 
-    static func saveTasks(_ tasks: [TaskItem]) {
+    static func saveTasks(_ tasks: [TaskItem]) { //salva as modificacoes wue a viewmodel manda
         do {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
